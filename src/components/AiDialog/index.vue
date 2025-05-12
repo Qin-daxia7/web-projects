@@ -56,11 +56,9 @@ export default {
     },
 
     async sendMessage() {
-
-      }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style scoped>

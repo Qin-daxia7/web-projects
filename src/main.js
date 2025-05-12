@@ -2,6 +2,8 @@ import Vue from "vue";
 //作用：类似与reset.css 重置样式
 import "normalize.css/normalize.css"; // A modern alternative to CSS resets
 
+import VueLazyload from 'vue-lazyload'
+
 //导入element-ui 组件
 import ElementUI from "element-ui";
 //导入element-ui 对应的样式
@@ -22,6 +24,13 @@ import request from "@/utils/request";
 // import { imgError } from "@/directive/index";
 import * as directives from "@/directive/index";
 import i18n from "@/lang/index";
+//图片懒加载
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: require('./assets/common/img.jpeg'),
+  loading: require('./assets/common/bigUserHeader.png'),
+  attempt: 1
+});
 // 配置ElementUI的中英切换逻辑
 Vue.use(ElementUI, {
   i18n: (key, value) => i18n.t(key, value),

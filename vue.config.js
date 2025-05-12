@@ -145,7 +145,6 @@ module.exports = {
           },
         },
       });
-
       // 将 runtime 代码提取到单独的文件
       config.optimization.runtimeChunk("single");
     });

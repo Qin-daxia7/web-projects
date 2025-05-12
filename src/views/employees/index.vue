@@ -39,7 +39,8 @@
             <template #default="{ row }">
               <el-image
                 style="width: 100px; height: 100px"
-                :src="row.staffPhoto"
+                :src="row.staffPhoto||require('@/assets/common/img.jpeg')"
+                lazy
               ></el-image>
             </template>
           </el-table-column>
