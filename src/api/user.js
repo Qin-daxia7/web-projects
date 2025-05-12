@@ -1,24 +1,35 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 
-export function login(data) {
+/**
+ *
+ * @param {*} loginForm 登录接口
+ * @returns
+ */
+export const loginApi = (loginForm) => {
   return request({
-    url: '/vue-admin-template/user/login',
-    method: 'post',
-    data
-  })
-}
+    url: "/sys/login",
+    method: "POST",
+    data: loginForm,
+  });
+};
+//获取用户资料
+export const getUserInfoApi = () => {
+  return request({
+    url: "/sys/profile",
+    method: "POST",
+  });
+};
+//获取用户头信息（含头像）
+export const getUserStaffPhoto = (id) => {
+  return request({
+    url: `/sys/user/${id}`,
+    method: "GET",
+  });
+};
 
-export function getInfo(token) {
+//查询用户工资
+export const getUserSalaryApi=(id)=>{
   return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
+    url:` /salarys/modify/${id}`
   })
 }

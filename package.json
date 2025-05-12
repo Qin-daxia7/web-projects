@@ -4,6 +4,7 @@
   "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
   "author": "Pan <panfree23@gmail.com>",
   "scripts": {
+    "build": "vue-cli-service build",
     "dev": "vue-cli-service serve --mode development",
     "build:prod": "vue-cli-service build --mode production",
     "build:stage": "vue-cli-service build --mode staging",
@@ -16,14 +17,25 @@
   "dependencies": {
     "axios": "0.18.1",
     "core-js": "3.6.5",
+    "cos-js-sdk-v5": "^1.8.7",
+    "dayjs": "^1.11.13",
+    "echarts": "^5.6.0",
     "element-ui": "2.13.2",
+    "esdk-obs-browserjs": "^3.24.3",
+    "esdk-obs-nodejs": "github:huaweicloud/huaweicloud-sdk-nodejs-obs",
+    "file-save": "^0.2.0",
+    "file-saver": "^2.0.5",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
+    "obs-sdk": "^0.1.0",
     "path-to-regexp": "2.4.0",
+    "screenfull": "^5.0.1",
     "vue": "2.6.10",
+    "vue-i18n": "^8.22.2",
     "vue-router": "3.0.6",
-    "vuex": "3.1.0"
+    "vuex": "3.1.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "4.4.4",

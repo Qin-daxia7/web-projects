@@ -12,7 +12,10 @@ export default {
       default: ''
     }
   },
+  //render和template都可以生成结构
+  
   render(h, context) {
+    //context.props获取props传递过来的数据 this.icon this.title render函数内部没有this（并不指向vue实例）
     const { icon, title } = context.props
     const vnodes = []
 

@@ -1,69 +1,79 @@
-// import router from './router'
-// import store from './store'
-// import { Message } from 'element-ui'
-// import NProgress from 'nprogress' // progress bar
-// import 'nprogress/nprogress.css' // progress bar style
-// import { getToken } from '@/utils/auth' // get token from cookie
-// import getPageTitle from '@/utils/get-page-title'
+//全局前置守卫进行判断
+import router from "./router";
+import store from "./store";
+import NProgress from "nprogress";
+import { asyncRoutes } from "./router";
+import "nprogress/nprogress.css";
+import { mapGetters } from "vuex";
 
-// NProgress.configure({ showSpinner: false }) // NProgress Configuration
+const whiteList = ["/login", "/404"];
+router.beforeEach(async (to, from, next) => {
+  NProgress.start();
+  //从store中获取token
+  const token = store.getters.token;
+  if (token) {
+    //token有值
+    if (to.path === "/login") {
+      //有token访问的是登录页 跳转到首页
+      next("/");
+      NProgress.done();
+    } else {
+      //如果有用户信息，就不请求用户信息了
+      const userInfo = store.state.user.userInfo;
+      //空对象转blur值会一直为真
+      if (Object.keys(userInfo).length === 0) {
+        //获取用户数据
+        const {
+          roles: { menus },
+        } = await store.dispatch("user/getUserInfo");
+        //做权限判断使用
+        // console.log(menus,'222');
+        //1.赛筛选动态路由的位置,全局前置守卫
+        const otherRoutes = asyncRoutes.filter((item) =>
+          menus.includes(item.children[0].name)
+        );
+        //2、用户所对应的权限表示
+        //3、所有动态路由
+        //4、拿动态路由权限标识 进行筛选
+        //5、拿到筛选后的动态路由添加到路由规则中
+        //addRoutes在添加路由时 是一个异步过程
+        //在执行next的时候一定要确保路由规则已经添加完成
+        // console.log(otherRoutes);
+        router.addRoutes([
+          ...otherRoutes,
+          { path: "*", redirect: "/404", hidden: true },
+        ]);
+        store.commit("routes/SETROUTES", [
+          ...otherRoutes,
+          { path: "*", redirect: "/404", hidden: true },
+        ]);
+        //下面这个方案可以等待addRoutes执行完成之后再跳转
+        next({
+          ...to,
+          // path: to.path,
+          // params: to.params,
+          // meta: to.meta,
+          replace: true, //表示替换上一次的历史记录
+        });
+        return;
+      }
+      //有token访问的是其他页，直接放行
 
-// const whiteList = ['/login'] // no redirect whitelist
-
-// router.beforeEach(async(to, from, next) => {
-//   // 加载进度条
-//   NProgress.start()
-
-//   // 设置页签的文本
-//   document.title = getPageTitle(to.meta.title)
-
-//   // determine whether the user has logged in
-//   const hasToken = getToken()
-
-//   if (hasToken) {
-//     //有token的逻辑
-//     if (to.path === '/login') {
-//       // next('/')简单写法
-//       next({ path: '/' })//完整写法
-//       NProgress.done()
-//       //有token跳转的是非登录页
-//     } else {
-//       const hasGetUserInfo = store.getters.name
-//       if (hasGetUserInfo) {
-//         //有用户信息，直接放行
-//         next()
-//         //没有用户信息
-//       } else {
-//         //重新获取用户信息
-//         try {
-//           await store.dispatch('user/getInfo')
-//           //token能获取到用户信息，说明信息有效，直接放行
-//           next()
-//         } catch (error) {
-//           //获取不到用户信息，token失效，跳转到登录页
-//           await store.dispatch('user/resetToken')
-//           Message.error(error || 'Has Error')
-//           next(`/login?redirect=${to.path}`)
-//           NProgress.done()
-//         }
-//       }
-//     }
-//     //没有token的逻辑
-//   } else {
-//     /* has no token*/
-
-//     if (whiteList.indexOf(to.path) !== -1) {
-//       //访问的是白名单，直接放行
-//       next()
-//     } else {
-//       // 访问的不是白名单，跳转到登录页
-//       next(`/login?redirect=${to.path}`)
-//       NProgress.done()
-//     }
-//   }
-// })
-
-// router.afterEach(() => {
-//   // finish progress bar
-//   NProgress.done()
-// })
+      next();
+    }
+  } else {
+    //token无值
+    if (whiteList.includes(to.path)) {
+      //访问的路径在白名单中，直接放行
+      next();
+    } else {
+      //访问的路径不在白名单中，直接跳到登录页
+      next("/login");
+      NProgress.done();
+    }
+  }
+});
+//beforeEach中重定向之后 不会再走afterEach
+router.afterEach((to, from) => {
+  NProgress.done();
+});
